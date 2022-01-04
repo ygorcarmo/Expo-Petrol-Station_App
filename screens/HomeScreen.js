@@ -1,12 +1,37 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import MapView, { Callout, Circle, Marker } from 'react-native-maps';
 import { StyleSheet, Text, TouchableOpacity, View, Dimensions } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { auth } from '../firebase';
 import { GOOGLE_MAPS_API } from "@env";
+import * as Location from 'expo-location';
 
 const HomeScreen = () => {
+
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+      
+    })();
+}, []);
+
+  let text = 'Waiting..';
+  if (errorMsg) {
+    text = errorMsg;
+  } else if (location) {
+    text = JSON.stringify(location);
+  }
 
     const navigation = useNavigation();
 
@@ -18,13 +43,15 @@ const HomeScreen = () => {
             .catch((err) => alert(err.message))
     };
 
-    const [pin, setPin] = React.useState({latitude: 37.78825,
+    const [pin, setPin] = React.useState({latitude: setLocation().coords.latitude,
         longitude: -122.4324,});
+        console.log(location);
 
     const [region, setRegion] = React.useState({latitude: 37.78825,
         longitude: -122.4324,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,});
+    
 
     return (
         <View style={{ marginTop:50, flex:1}}>
@@ -55,12 +82,10 @@ const HomeScreen = () => {
       styles={{container: {flex:0, position:"absolute", width:"100%", zIndex: 1},
                 listView:{ backgroundColor: "white"}}}
     />
-            <MapView style={styles.map} initialRegion={{
-                latitude: 37.78825,
+            <MapView style={styles.map} initialRegion={{latitude: 37.78825,
                 longitude: -122.4324,
                 latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-                }}
+                longitudeDelta: 0.0421,}}
                 provider="google"
             >
                 <Marker coordinate={{latitude: region.latitude, longitude:region.longitude}} />
