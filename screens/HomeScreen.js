@@ -42,8 +42,9 @@ const HomeScreen = () => {
             })
             .catch((err) => alert(err.message))
     };
+    
 
-    const [pin, setPin] = React.useState({latitude: setLocation().coords.latitude,
+    const [pin, setPin] = React.useState({latitude: 37.78825,
         longitude: -122.4324,});
         console.log(location);
 
@@ -82,10 +83,7 @@ const HomeScreen = () => {
       styles={{container: {flex:0, position:"absolute", width:"100%", zIndex: 1},
                 listView:{ backgroundColor: "white"}}}
     />
-            <MapView style={styles.map} initialRegion={{latitude: 37.78825,
-                longitude: -122.4324,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,}}
+            <MapView showsUserLocation={true} mapPadding={{top: 20, right: 20, bottom: 30, left: 20}} showsMyLocationButton={true} followsUserLocation={true} style={styles.map}
                 provider="google"
             >
                 <Marker coordinate={{latitude: region.latitude, longitude:region.longitude}} />
