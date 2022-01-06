@@ -42,11 +42,16 @@ const HomeScreen = () => {
             })
             .catch((err) => alert(err.message))
     };
+    const handleLocation = () => {
+        if(location != null){setRegion({latitude:location.coords.latitude, longitude:location.coords.longitude,
+            latitudeDelta: 0.0322,
+            longitudeDelta: 0.0121,});}
+    }
     
 
     const [pin, setPin] = React.useState({latitude: 37.78825,
         longitude: -122.4324,});
-        console.log(location);
+        // console.log(location);
 
     const [region, setRegion] = React.useState({latitude: 37.78825,
         longitude: -122.4324,
@@ -83,31 +88,17 @@ const HomeScreen = () => {
       styles={{container: {flex:0, position:"absolute", width:"100%", zIndex: 1},
                 listView:{ backgroundColor: "white"}}}
     />
-            <MapView showsUserLocation={true} mapPadding={{top: 20, right: 20, bottom: 30, left: 20}} showsMyLocationButton={true} followsUserLocation={true} style={styles.map}
+            <MapView onUserLocationChange={e => {
+                // handleLocation();
+              } } 
+             showsUserLocation={true}
+             region={region} 
+             followsUserLocation={true}
+             mapPadding={{top: 20, right: 20, bottom: 30, left: 20}} 
+             showsMyLocationButton={true} followsUserLocation={true} 
+             style={styles.map}
                 provider="google"
             >
-                <Marker coordinate={{latitude: region.latitude, longitude:region.longitude}} />
-                                
-                <Marker 
-                coordinate= {pin} 
-                    pinColor='black'
-                    draggable={true}
-                    onDragStart={(e) => {
-                        console.log("Drag start", e.nativeEvent.coordinate)
-                    }}
-                    onDragEnd={(e) => {
-                        setPin({
-                            latitude: e.nativeEvent.coordinate.latitude,
-                            longitude: e.nativeEvent.coordinate.longitude
-                        })
-                        console.log("Drag end", e.nativeEvent.coordinate)
-                    }}
-                    >
-                        <Callout>
-                            <Text>I'm Here!</Text>  
-                        </Callout>
-                </Marker>
-                <Circle center={pin} radius={1000} />
             </MapView>
         </View>
     )
