@@ -43,7 +43,7 @@ const HomeScreen = () => {
             .catch((err) => alert(err.message))
     };
     const handleLocation = () => {
-        if(location != null){setRegion({latitude:location.coords.latitude, longitude:location.coords.longitude,
+        if(location != null && region.latitude != location.coords.latitude){ console.log(location);setRegion({latitude:location.coords.latitude, longitude:location.coords.longitude,
             latitudeDelta: 0.0322,
             longitudeDelta: 0.0121,});}
     }
@@ -89,7 +89,7 @@ const HomeScreen = () => {
                 listView:{ backgroundColor: "white"}}}
     />
             <MapView onUserLocationChange={e => {
-                // handleLocation();
+                handleLocation();
               } } 
              showsUserLocation={true}
              region={region} 

@@ -37,7 +37,7 @@ const LoginScreen = () => {
         .signInWithEmailAndPassword(email, password)
         .then((userCredentials) => {
             const user = userCredentials.user;
-            alert("Login Successfuly");
+            // alert("Login Successfuly");
             console.log('Logged in with:', user.email); 
         })
         .catch((err) => alert(err.message)); 
