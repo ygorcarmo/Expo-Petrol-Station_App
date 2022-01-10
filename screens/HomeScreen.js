@@ -12,18 +12,19 @@ const HomeScreen = () => {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
 
-  useEffect(() => {
-    (async () => {
+  useEffect( async () => {    
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         setErrorMsg('Permission to access location was denied');
         return;
       }
 
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-      
-    })();
+      let locationResponse = await Location.getCurrentPositionAsync({});
+      setLocation(locationResponse); 
+      // setRegion({latitude:location.coords.latitude, longitude:location.coords.longitude,
+      //   latitudeDelta: 0.0322,
+      //   longitudeDelta: 0.0121,});   
+      //   console.log(location);
 }, []);
 
   let text = 'Waiting..';
@@ -42,10 +43,15 @@ const HomeScreen = () => {
             })
             .catch((err) => alert(err.message))
     };
-    const handleLocation = () => {
-        if(location != null && region.latitude != location.coords.latitude){ console.log(location);setRegion({latitude:location.coords.latitude, longitude:location.coords.longitude,
+    //handle user location
+    const handleUserLocation = async () => {
+      let currentLocation = await Location.getCurrentPositionAsync({});
+      
+        if(currentLocation != null && region.latitude !== currentLocation.coords.latitude && region.longitude !== currentLocation.coords.longitude){
+          setRegion({latitude:currentLocation.coords.latitude, longitude:currentLocation.coords.longitude,
             latitudeDelta: 0.0322,
-            longitudeDelta: 0.0121,});}
+            longitudeDelta: 0.0121,});
+            console.log(currentLocation)}
     }
     
 
@@ -89,7 +95,7 @@ const HomeScreen = () => {
                 listView:{ backgroundColor: "white"}}}
     />
             <MapView onUserLocationChange={e => {
-                handleLocation();
+               handleUserLocation();
               } } 
              showsUserLocation={true}
              region={region} 
